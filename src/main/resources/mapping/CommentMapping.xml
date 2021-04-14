@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.yanghui.magicqa.mapper.CommentMapper">
+
+    <select id="count" resultType="long">
+        select count(c.comment_id) from comment as c
+        <if test="keyword!=null and keyword!=''">
+            where c.context like concat('%',#{keyword},'%')
+        </if >
+    </select>
+
+    <select id="select_by_pager" resultType="com.yanghui.magicqa.entity.dto.CommentInfo">
+        select
+        c.comment_id as comment_id,
+        c.uid as uid,
+        case
+            when c.state=1 then u.name
+            when c.state=2 then concat(cer.school,'学生')
+            when c.state=3 then concat(cer.real_name,'-',cer.school,cer.major,'专业学生')
+        end name,
+        c.context as context,
+        c.time as time,
+        count(r.reply_id) as reply_number
+        from comment as c
+        left join user as u on c.uid = u.uid
+        left join reply as r on c.comment_id = r.comment_id
+        left join certification  as cer on cer.certification_id = u.certification_id
+        <if test="keyword!=null and keyword!=''">
+            where c.context like concat('%',#{keyword},'%')
+        </if >
+        group by c.comment_id
+        <if test="offset!=null and pageSize!=null">
+            limit #{offset},#{pageSize}
+        </if>
+    </select>
+
+    <select id="select_all_by_uid" resultType="com.yanghui.magicqa.entity.dto.CommentInfo">
+        select
+            c.comment_id as comment_id,
+            c.uid as uid,
+            case
+                when c.state=1 then u.name
+                when c.state=2 then concat(cer.school,'学生')
+                when c.state=3 then concat(cer.real_name,'-',cer.school,cer.major,'专业学生')
+            end name,
+            c.state as state,
+            c.context as context,
+            c.time as time
+        from comment as c
+        left join user as u on c.uid = u.uid
+        left join certification  as cer on cer.certification_id = u.certification_id
+        where c.uid = #{uid}
+        <if test="offset!=null and pageSize!=null">
+            limit #{offset},#{pageSize}
+        </if>
+    </select>
+
+    <select id="select_all_by_post_id" resultType="com.yanghui.magicqa.entity.dto.CommentInfo">
+        select
+            c.comment_id as comment_id,
+            c.uid as uid,
+            case
+                when c.state=1 then u.name
+                when c.state=2 then concat(cer.school,'学生')
+                when c.state=3 then concat(cer.real_name,'-',cer.school,cer.major,'专业学生')
+            end name,
+            c.context as context,
+            c.time as time,
+            c.state as state,
+            count(r.reply_id) as reply_number
+        from comment as c
+        left join user as u on c.uid = u.uid
+        left join reply as r on c.comment_id = r.comment_id
+        left join certification as cer on cer.certification_id = u.certification_id
+        where c.post_id = #{post_id}
+        group by c.comment_id
+        <if test="offset!=null and pageSize!=null">
+            limit #{offset},#{pageSize}
+        </if>
+    </select>
+
+    <insert id="insert_one" parameterType="com.yanghui.magicqa.entity.Comment">
+        insert into comment(uid, post_id, context, time, state)
+        values (#{uid},#{post_id},#{context},#{time},#{state})
+    </insert>
+
+</mapper>

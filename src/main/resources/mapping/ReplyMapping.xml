@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.yanghui.magicqa.mapper.ReplyMapper">
+
+    <select id="count" resultType="long">
+        select count(r.reply_id) from reply as r
+        <if test="keyword!=null and keyword!=''">
+            where r.context like concat('%',#{keyword},'%')
+        </if >
+    </select>
+
+    <select id="select_by_pager" resultType="com.yanghui.magicqa.entity.dto.ReplyInfo">
+        select
+        r.reply_id as reply_id,
+        r.from_uid as from_uid,
+        r.to_uid as to_uid,
+        r.from_state as from_state,
+        r.to_state as to_state,
+        case
+            when r.from_state=1 then from_u.name
+            when r.from_state=2 then concat(from_cer.school,'学生')
+            when r.from_state=3 then concat(from_cer.real_name,'-',from_cer.school,from_cer.major,'专业学生')
+        end from_name,
+        case
+            when r.to_state=1 then to_u.name
+            when r.to_state=2 then concat(to_cer.school,'学生')
+            when r.to_state=3 then concat(to_cer.real_name,'-',to_cer.school,to_cer.major,'专业学生')
+        end to_name,
+        r.context as context,
+        r.time as time
+        from reply as r
+        left join user as from_u on r.from_uid = from_u.uid
+        left join certification as from_cer on from_u.certification_id = from_cer.certification_id
+        left join user as to_u on r.to_uid = to_u.uid
+        left join certification as to_cer on to_u.certification_id = to_cer.certification_id
+        <if test="keyword!=null and keyword!=''">
+            where r.context like concat('%',#{keyword},'%')
+        </if >
+        order by r.time
+        <if test="offset!=null and pageSize!=null">
+            limit #{(currentPage-1)*pageSize},#{pageSize}
+        </if>
+    </select>
+
+    <select id="select_all_by_uid" resultType="com.yanghui.magicqa.entity.dto.ReplyInfo">
+        select
+            r.reply_id as reply_id,
+            r.from_uid as from_uid,
+            r.to_uid as to_uid,
+            r.from_state as from_state,
+            r.to_state as to_state,
+            case
+                when r.from_state=1 then from_u.name
+                when r.from_state=2 then concat(from_cer.school,'学生')
+                when r.from_state=3 then concat(from_cer.real_name,'-',from_cer.school,from_cer.major,'专业学生')
+            end from_name,
+            case
+                when r.to_state=1 then to_u.name
+                when r.to_state=2 then concat(to_cer.school,'学生')
+                when r.to_state=3 then concat(to_cer.real_name,'-',to_cer.school,to_cer.major,'专业学生')
+            end to_name,
+            r.context as context,
+            r.time as time
+        from reply as r
+        left join user as from_u on r.from_uid = from_u.uid
+        left join certification as from_cer on from_u.certification_id = from_cer.certification_id
+        left join user as to_u on r.to_uid = to_u.uid
+        left join certification as to_cer on to_u.certification_id = to_cer.certification_id
+        where r.from_uid = #{uid}
+        <if test="offset!=null and pageSize!=null">
+            limit #{offset},#{pageSize}
+        </if>
+    </select>
+
+    <select id="select_all_by_from_uid" resultType="com.yanghui.magicqa.entity.dto.ReplyInfo">
+        select
+            r.reply_id as reply_id,
+            r.from_uid as from_uid,
+            r.to_uid as to_uid,
+            r.from_state as from_state,
+            r.to_state as to_state,
+            case
+                when r.from_state=1 then from_u.name
+                when r.from_state=2 then concat(from_cer.school,'学生')
+                when r.from_state=3 then concat(from_cer.real_name,'-',from_cer.school,from_cer.major,'专业学生')
+            end from_name,
+            case
+                when r.to_state=1 then to_u.name
+                when r.to_state=2 then concat(to_cer.school,'学生')
+                when r.to_state=3 then concat(to_cer.real_name,'-',to_cer.school,to_cer.major,'专业学生')
+            end to_name,
+            to_u.name as to_name,
+            r.context as context,
+            r.time as time
+        from reply as r
+        left join user as from_u on r.from_uid = from_u.uid
+        left join certification as from_cer on from_u.certification_id = from_cer.certification_id
+        left join user as to_u on r.to_uid = to_u.uid
+        left join certification as to_cer on to_u.certification_id = to_cer.certification_id
+        where r.from_uid = #{from_uid}
+        order by r.time
+        <if test="offset!=null and pageSize!=null">
+            limit #{offset},#{pageSize}
+        </if>
+    </select>
+
+    <select id="select_all_by_comment_id" resultType="com.yanghui.magicqa.entity.dto.ReplyInfo">
+        select
+            r.reply_id as reply_id,
+            r.from_uid as from_uid,
+            r.to_uid as to_uid,
+            r.from_state as from_state,
+            r.to_state as to_state,
+            case
+                when r.from_state=1 then from_u.name
+                when r.from_state=2 then concat(from_cer.school,'学生')
+                when r.from_state=3 then concat(from_cer.real_name,'-',from_cer.school,from_cer.major,'专业学生')
+            end from_name,
+            case
+                when r.to_state=1 then to_u.name
+                when r.to_state=2 then concat(to_cer.school,'学生')
+                when r.to_state=3 then concat(to_cer.real_name,'-',to_cer.school,to_cer.major,'专业学生')
+            end to_name,
+            r.context as context,
+            r.time as time
+        from reply as r
+        left join user as from_u on r.from_uid = from_u.uid
+        left join certification as from_cer on from_u.certification_id = from_cer.certification_id
+        left join user as to_u on r.to_uid = to_u.uid
+        left join certification as to_cer on to_u.certification_id = to_cer.certification_id
+        where r.comment_id = #{comment_id}
+        <if test="offset!=null and pageSize!=null">
+            limit #{offset},#{pageSize}
+        </if>
+    </select>
+
+    <insert id="insert_one" parameterType="com.yanghui.magicqa.entity.Reply">
+        insert into reply(from_uid, to_uid, comment_id, context, time, from_state, to_state)
+        values (#{from_uid},#{to_uid},#{comment_id},#{context},#{time},#{from_state},#{to_state})
+    </insert>
+</mapper>

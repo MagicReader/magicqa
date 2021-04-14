@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.yanghui.magicqa.mapper.CertificationMapper">
+
+    <select id="select_all_by_phone_number" resultType="com.yanghui.magicqa.entity.Certification">
+        select * from certification where phone_number = #{phone_number}
+    </select>
+    <select id="select_all_by_certification_id" resultType="com.yanghui.magicqa.entity.Certification">
+        select * from certification where certification_id = #{certification_id}
+    </select>
+    <insert id="insert_one_with_phone_number">
+        insert into certification(phone_number) value #{phone_number}
+    </insert>
+    <select id="select_by_uid" resultType="com.yanghui.magicqa.entity.Certification">
+        select
+            c.certification_id as certification_id,
+            c.phone_number as phone_number,
+            c.id_number as id_number,
+            c.real_name as real_name,
+            c.school as school,
+            c.major as major,
+            c.student_card_photo_src as student_card_photo_src,
+            c.state as state
+        from certification as c
+        left join user as u on c.certification_id = u.certification_id
+        where u.uid = #{uid}
+    </select>
+    <select id="select_one_not_start" resultType="com.yanghui.magicqa.entity.Certification">
+        select * from certification where state = 2 limit 1
+    </select>
+    <update id="update_one_state_by_certification_id">
+        update certification
+        set
+            state = #{state}
+        where certification.certification_id = #{certification_id}
+    </update>
+    <update id="update_one_with_more_info">
+        update certification as c
+        left join user as u on c.certification_id = u.certification_id
+        set
+            c.id_number = #{id_number},
+            c.real_name = #{real_name},
+            c.school = #{school},
+            c.major = #{major},
+            c.student_card_photo_src = #{student_card_photo_src}
+        where u.uid = #{uid}
+    </update>
+
+
+</mapper>

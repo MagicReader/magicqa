@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.yanghui.magicqa.mapper.PostMapper">
+
+    <select id="select_all_by_uid" resultType="com.yanghui.magicqa.entity.Post">
+        select * from post where uid = #{uid}
+    </select>
+
+    <select id="count" resultType="long">
+        select count(p.post_id) from post as p
+        <if test="keyword!=null and keyword!=''">
+            where p.title like concat('%',#{keyword},'%')
+            or p.context like concat('%',#{keyword},'%')
+        </if >
+    </select>
+
+    <select id="select_by_pager" resultType="com.yanghui.magicqa.entity.dto.PostInfo">
+        select
+               p.post_id as post_id,
+               case
+                   when p.state=1 then u.name
+                   when p.state=2 then concat(cer.school,'学生')
+                   when p.state=3 then concat(cer.real_name,'-',cer.school,cer.major,'专业学生')
+               end name,
+               p.title as title,
+               p.context as context,
+               p.time as time,
+               count(c.comment_id) as comment_number
+        from post as p
+        left join user as u on p.uid = u.uid
+        left join comment as c on p.post_id = c.post_id
+        left join certification  as cer on cer.certification_id = u.certification_id
+        <if test="keyword!=null and keyword!=''">
+            where p.title like concat('%',#{keyword},'%')
+                or p.context like concat('%',#{keyword},'%')
+        </if >
+        group by p.post_id
+        order by p.time
+        limit #{offset},#{pageSize}
+    </select>
+
+    <select id="select_by_post_id" resultType="com.yanghui.magicqa.entity.dto.PostInfoDetail">
+        select
+               p.post_id as post_id,
+               case
+                    when p.state=1 then u.name
+                    when p.state=2 then concat(cer.school,'学生')
+                    when p.state=3 then concat(cer.real_name,'-',cer.school,cer.major,'专业学生')
+                end name,
+               p.title as title,
+               p.context as context,
+               p.time as time
+        from post as p
+        left join user as u on p.uid = u.uid
+        left join certification  as cer on cer.certification_id = u.certification_id
+        where p.post_id = #{post_id}
+    </select>
+
+    <select id="select_by_comment_id" resultType="com.yanghui.magicqa.entity.dto.PostInfo">
+        select
+            p.post_id as post_id,
+            p.title as title
+        from post as p
+        left join comment as c on p.post_id = c.post_id
+        where c.comment_id = #{comment_id}
+    </select>
+
+    <select id="select_by_reply_id" resultType="com.yanghui.magicqa.entity.dto.PostInfo">
+        select
+            p.post_id as post_id,
+            p.title as title
+        from post as p
+        left join comment as c on p.post_id = c.post_id
+        left join reply as r on c.comment_id = r.comment_id
+        where r.reply_id = #{reply_id}
+    </select>
+
+    <insert id="insert_one" parameterType="com.yanghui.magicqa.entity.Post">
+        insert into post(uid, title, context, time, state)
+        values (#{uid},#{title},#{context},#{time},#{state})
+    </insert>
+
+</mapper>

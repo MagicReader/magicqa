@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.yanghui.magicqa.mapper.AnnouncementMapper">
+
+    <insert id="insert_one" parameterType="com.yanghui.magicqa.entity.Announcement">
+        insert into announcement(admin_id,title,context,time)
+            values (#{admin_id},#{title},#{context},#{time})
+    </insert>
+
+    <select id="select_by_pager" resultType="com.yanghui.magicqa.entity.Announcement">
+        select * from announcement limit #{offset},#{pageSize}
+    </select>
+
+    <select id="select_by_announcement_id" resultType="com.yanghui.magicqa.entity.dto.AnnouncementDetail">
+        select
+            admin.name as name,
+            announcement.title as title,
+            announcement.context as context,
+            announcement.time as time
+        from announcement
+        left join admin on announcement.admin_id = admin.admin_id
+        where announcement_id = #{announcement_id}
+        order by time
+    </select>
+
+</mapper>

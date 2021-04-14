@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.yanghui.magicqa.mapper.UserMapper">
+
+    <select id="select_all_by_name_and_password" resultType="com.yanghui.magicqa.entity.User">
+        select * from user where name = #{name} and password = #{password}
+    </select>
+
+    <select id="select_all_by_name" resultType="com.yanghui.magicqa.entity.User">
+        select * from user where name = #{name}
+    </select>
+    <select id="select_all_by_uid" resultType="com.yanghui.magicqa.entity.User">
+        select * from user where uid = #{uid}
+    </select>
+    <insert id="insert_one">
+        insert into user(name,password,state) values (#{name},#{password},'normal')
+    </insert>
+
+    <select id="select_by_pager" resultType="com.yanghui.magicqa.entity.User">
+        select * from user
+        <if test="name!=null and name!=''">
+            where name like concat('%',#{name},'%')
+        </if >
+        limit #{offset},#{pageSize}
+    </select>
+
+    <select id="count" resultType="long">
+        select count(uid) from user
+        <if test="name!=null and name!=''">
+            where name like concat('%',#{name},'%')
+        </if >
+    </select>
+
+    <select id="select_all_by_state" resultType="com.yanghui.magicqa.entity.User">
+        select * from user where state = #{state}
+    </select>
+
+</mapper>
