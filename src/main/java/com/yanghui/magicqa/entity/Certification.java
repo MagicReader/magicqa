@@ -7,7 +7,7 @@ import lombok.ToString;
 @ToString
 public class Certification {
   private long certification_id;
-  private long phone_number;
+  private String phone_number;
   private long id_number;
   private String real_name;
   private String school;

@@ -23,15 +23,15 @@ public class SmsFactory {
     @Autowired
     private StringRedisTemplate redisTemplate;
 
-    public String produceCode(long phone_number) {
+    public String produceCode(String phone_number) {
         String code = null;
         try{
             //随机n位生成短信验证码
             code = this.produceRandomStr(4);
             //将短信验证码的信息保存入redis
-            redisTemplate.opsForValue().set(String.valueOf(phone_number), code);
+            redisTemplate.opsForValue().set(phone_number, code);
             //设置token有效的时间 expire方法
-            redisTemplate.expire(String.valueOf(phone_number), 60, TimeUnit.SECONDS);
+            redisTemplate.expire(phone_number, 60, TimeUnit.SECONDS);
             System.out.println("produceCode "+"code:"+code);
         }catch (Exception e){
             System.out.println("produceCode fail!");
@@ -39,7 +39,7 @@ public class SmsFactory {
         return code;
     }
 
-    public boolean sendPhoneMessage(long phone_number,String code) {
+    public boolean sendPhoneMessage(String phone_number,String code) {
         try{
 
             Credential cred = new Credential("", "");
@@ -53,7 +53,7 @@ public class SmsFactory {
             SmsClient client = new SmsClient(cred, "", clientProfile);
 
             SendSmsRequest req = new SendSmsRequest();
-            String[] phoneNumberSet1 = {"+86"+String.valueOf(phone_number)};
+            String[] phoneNumberSet1 = {"+86"+phone_number};
             req.setPhoneNumberSet(phoneNumberSet1);
 
             req.setTemplateID("922330");

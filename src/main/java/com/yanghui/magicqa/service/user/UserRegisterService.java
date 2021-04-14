@@ -17,7 +17,7 @@ public class UserRegisterService {
     @Autowired
     CertificationMapper certificationMapper;
 
-    public HashMap register_1(String name, long phone_number){
+    public HashMap register_1(String name, String phone_number){
         HashMap<Object, Object> responseBody = new HashMap<>();
         Integer status_code = 111;
         try{
@@ -43,11 +43,11 @@ public class UserRegisterService {
         return responseBody;
     }
 
-    public HashMap register_2(long phone_number, String code){
+    public HashMap register_2(String phone_number, String code){
         HashMap<Object, Object> responseBody = new HashMap<>();
         Integer status_code = 121;
         try{
-            if (code == null || redisTemplate.opsForValue().get(String.valueOf(phone_number)) != code) {
+            if ( code == null || code.equals(redisTemplate.opsForValue().get(phone_number)) ) {
                 System.out.println("register_2-短信验证码校验失败");
                 status_code = 122;
             }
@@ -59,7 +59,7 @@ public class UserRegisterService {
         return responseBody;
     }
 
-    public HashMap register_3(String name, String password, long phone_number){
+    public HashMap register_3(String name, String password, String phone_number){
         HashMap<Object, Object> responseBody = new HashMap<>();
         Integer status_code = 131;
         try{

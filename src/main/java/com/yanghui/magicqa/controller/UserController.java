@@ -35,17 +35,17 @@ public class UserController {
     // 用户注册
     @PostMapping(value = "/register/1")
     public @ResponseBody
-    Object register_1(@RequestParam("name") String name, @RequestParam("phone_number") long phone_number){
+    Object register_1(@RequestParam("name") String name, @RequestParam("phone_number") String phone_number){
         return userRegisterService.register_1(name, phone_number);
     }
     @PostMapping(value = "/register/2")
     public @ResponseBody
-    Object register_2(@RequestParam("phone_number") long phone_number, @RequestParam("code") String code){
+    Object register_2(@RequestParam("phone_number") String phone_number, @RequestParam("code") String code){
         return userRegisterService.register_2(phone_number, code);
     }
     @PostMapping(value = "/register/3")
     public @ResponseBody
-    Object register_3(@RequestParam("name") String name, @RequestParam("password") String password, @RequestParam("phone_number") long phone_number){
+    Object register_3(@RequestParam("name") String name, @RequestParam("password") String password, @RequestParam("phone_number") String phone_number){
         return userRegisterService.register_3(name, password, phone_number);
     }
     //用户获取公告信息
