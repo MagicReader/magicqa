@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 import java.util.HashMap;
+import java.util.concurrent.TimeUnit;
 
 @Service
 public class UserRegisterService {
@@ -27,11 +28,19 @@ public class UserRegisterService {
                 status_code = 113;
             }else{
                 SmsFactory smsFactory = new SmsFactory();
-                String code = smsFactory.produceCode(phone_number); // 缓存手机验证码
+                String code = smsFactory.produceCode(); // 缓存手机验证码
                 if(code == null){
                     status_code = 114;
                 }else if(!smsFactory.sendPhoneMessage(phone_number,code)){ // 发送手机短信
                     status_code = 115;
+                }else{
+                    System.out.println("phone_number:"+phone_number);
+                    System.out.println("code:"+code);
+                    //将短信验证码的信息保存入redis
+                    redisTemplate.opsForValue().set(phone_number, code);
+                    System.out.println("produceCode:"+code);
+                    //设置token有效的时间 expire方法
+                    redisTemplate.expire(phone_number, 60, TimeUnit.SECONDS);
                 }
             }
         }catch (Exception e){
@@ -47,12 +56,12 @@ public class UserRegisterService {
         HashMap<Object, Object> responseBody = new HashMap<>();
         Integer status_code = 121;
         try{
-            if ( code == null || code.equals(redisTemplate.opsForValue().get(phone_number)) ) {
-                System.out.println("register_2-短信验证码校验失败");
+            if ( code == null || !code.equals(redisTemplate.opsForValue().get(phone_number)) ) {
+                System.out.println("register_2-验证码不存在或超时");
                 status_code = 122;
             }
         }catch (Exception e){
-            System.out.println("register_2-其他原因导致失败："+e);
+            System.out.println("register_2-其他原因导致验证失败："+e);
             status_code = 123;
         }
         responseBody.put("status_code", status_code);

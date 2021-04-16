@@ -19,20 +19,28 @@ public class TokenFactory {
 
         String tokenValue = name+password+"#RefreshToken"+new Timestamp(new Date().getTime()).toString();
         System.out.println("produceRefreshToken:"+tokenValue);
-        //将登陆的信息保存入redis
-        redisTemplate.opsForValue().set(tokenValue, "flag");
-        //设置token有效的时间 expire方法
-        redisTemplate.expire(tokenValue, 300, TimeUnit.SECONDS);
+        try{
+            //将登陆的信息保存入redis
+            redisTemplate.opsForValue().set(tokenValue, "flag");
+            //设置token有效的时间 expire方法
+            redisTemplate.expire(tokenValue, 300, TimeUnit.SECONDS);
+        }catch (Exception e){
+            System.out.println("produceRefreshToken error:"+e);
+        }
         return tokenValue;
     }
 
     public String produceAccessToken(String refreshToken) {
         String tokenValue = refreshToken+"##AccessToken"+new Timestamp(new Date().getTime()).toString();
         System.out.println("produceAccessToken:"+tokenValue);
-        //将登陆的信息保存入redis
-        redisTemplate.opsForValue().set(tokenValue, "flag");
-        //设置token有效的时间 expire方法
-        redisTemplate.expire(tokenValue, 7, TimeUnit.DAYS);
+        try{
+            //将登陆的信息保存入redis
+            redisTemplate.opsForValue().set(tokenValue, "flag");
+            //设置token有效的时间 expire方法
+            redisTemplate.expire(tokenValue, 7, TimeUnit.DAYS);
+        }catch (Exception e){
+            System.out.println("produceAccessToken error:"+e);
+        }
         return tokenValue;
     }
 

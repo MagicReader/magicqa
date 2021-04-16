@@ -9,8 +9,9 @@
     <select id="select_all_by_certification_id" resultType="com.yanghui.magicqa.entity.Certification">
         select * from certification where certification_id = #{certification_id}
     </select>
-    <insert id="insert_one_with_phone_number">
-        insert into certification(phone_number) value #{phone_number}
+    <insert id="insert_one_with_phone_number" parameterType="java.lang.String">
+        insert into certification(phone_number,state)
+        values (#{phone_number},1)
     </insert>
     <select id="select_by_uid" resultType="com.yanghui.magicqa.entity.Certification">
         select

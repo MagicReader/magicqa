@@ -8,41 +8,25 @@ import com.tencentcloudapi.common.profile.HttpProfile;
 import com.tencentcloudapi.sms.v20190711.SmsClient;
 import com.tencentcloudapi.sms.v20190711.models.SendSmsRequest;
 import com.tencentcloudapi.sms.v20190711.models.SendSmsResponse;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
-
 import java.util.Random;
-import java.util.concurrent.TimeUnit;
 
 /**
  * 生产短信验证码
  **/
 @Service
 public class SmsFactory {
-    @Autowired
-    private StringRedisTemplate redisTemplate;
 
-    public String produceCode(String phone_number) {
-        String code = null;
-        try{
-            //随机n位生成短信验证码
-            code = this.produceRandomStr(4);
-            //将短信验证码的信息保存入redis
-            redisTemplate.opsForValue().set(phone_number, code);
-            //设置token有效的时间 expire方法
-            redisTemplate.expire(phone_number, 60, TimeUnit.SECONDS);
-            System.out.println("produceCode "+"code:"+code);
-        }catch (Exception e){
-            System.out.println("produceCode fail!");
-        }
+    public String produceCode() {
+        //随机n位生成短信验证码
+        String code = this.produceRandomStr(4);
         return code;
     }
 
     public boolean sendPhoneMessage(String phone_number,String code) {
         try{
 
-            Credential cred = new Credential("", "");
+            Credential cred = new Credential("AKID4uVryu53II9oVvcyc19qne7PdwzmHpyq", "tdiEUZOyHLApfFbfUgcz46rclhGZhX9z");
 
             HttpProfile httpProfile = new HttpProfile();
             httpProfile.setEndpoint("sms.tencentcloudapi.com");
@@ -57,7 +41,7 @@ public class SmsFactory {
             req.setPhoneNumberSet(phoneNumberSet1);
 
             req.setTemplateID("922330");
-            req.setSign("MagicQA");
+            req.setSign("magicreader");
 
             String[] templateParamSet1 = {code};
             req.setTemplateParamSet(templateParamSet1);
@@ -75,7 +59,7 @@ public class SmsFactory {
         return true;
     }
 
-    private static String produceRandomStr(int n){
+    private String produceRandomStr(int n){
         String str = "0,1,2,3,4,5,6,7,8,9";
         String str2[] = str.split(",");//将字符串以,分割
         Random rand = new Random();//创建Random类的对象rand

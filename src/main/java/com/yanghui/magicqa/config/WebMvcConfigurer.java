@@ -22,7 +22,7 @@ public class WebMvcConfigurer extends WebMvcConfigurationSupport {
          */
         registry.addInterceptor(getTokenInterceptor())
                 .addPathPatterns("/**") //拦截所有请求
-                .excludePathPatterns("/login","/admin/login","/testAPI"); //对应的不拦截的请求
+                .excludePathPatterns("/login","/register","/admin/login","/testAPI"); //对应的不拦截的请求
         super.addInterceptors(registry);
     }
 }
