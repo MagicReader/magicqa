@@ -6,6 +6,8 @@ import com.yanghui.magicqa.utils.SmsFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
 import java.util.HashMap;
 import java.util.concurrent.TimeUnit;
 
@@ -68,13 +70,17 @@ public class UserRegisterService {
         return responseBody;
     }
 
+    @Transactional(rollbackFor = {Exception.class})
     public HashMap register_3(String name, String password, String phone_number){
         HashMap<Object, Object> responseBody = new HashMap<>();
         Integer status_code = 131;
         try{
-            if(userMapper.insert_one(name, password) != 1) {
-                status_code = 132; //新建用户失败
-            }else if(certificationMapper.insert_one_with_phone_number(phone_number) != 1){
+            if(certificationMapper.insert_one_with_phone_number(phone_number) == 1){
+                Long certification_id = certificationMapper.select_certification_id_by_phone_number(phone_number).get(0);
+                if(userMapper.insert_one(name, password, certification_id) != 1) {
+                    status_code = 132; //新建用户失败
+                }
+            }else{
                 status_code = 133; //登记手机号失败
             }
         }catch (Exception e){

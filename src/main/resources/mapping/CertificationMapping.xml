@@ -6,6 +6,9 @@
     <select id="select_all_by_phone_number" resultType="com.yanghui.magicqa.entity.Certification">
         select * from certification where phone_number = #{phone_number}
     </select>
+    <select id="select_certification_id_by_phone_number" resultType="java.lang.Long">
+        select certification_id from certification where phone_number = #{phone_number}
+    </select>
     <select id="select_all_by_certification_id" resultType="com.yanghui.magicqa.entity.Certification">
         select * from certification where certification_id = #{certification_id}
     </select>

@@ -14,7 +14,7 @@
         select * from user where uid = #{uid}
     </select>
     <insert id="insert_one">
-        insert into user(name,password,state) values (#{name},#{password},'normal')
+        insert into user(name,password,certification_id,state) values (#{name},#{password},#{certification_id},'normal')
     </insert>
 
     <select id="select_by_pager" resultType="com.yanghui.magicqa.entity.User">
