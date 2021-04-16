@@ -18,7 +18,7 @@ import java.util.Random;
 public class SmsFactory {
 
     public String produceCode() {
-        //随机n位生成短信验证码
+        //随机4位生成短信验证码
         String code = this.produceRandomStr(4);
         return code;
     }
