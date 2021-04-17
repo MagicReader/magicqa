@@ -12,6 +12,6 @@ public interface UserMapper {
     List<User> select_all_by_name(String name);
     List<User> select_all_by_uid(long uid);
     Integer insert_one(String name,String password,Long certification_id);
-    List<User> select_by_pager(Long currentPage, Long pageSize, String name);
+    List<User> select_by_pager(Long offset, Long pageSize, String name);
     Long count(String name);
 }

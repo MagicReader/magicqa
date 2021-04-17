@@ -39,7 +39,7 @@
         </if >
         order by r.time
         <if test="offset!=null and pageSize!=null">
-            limit #{(currentPage-1)*pageSize},#{pageSize}
+            limit #{offset},#{pageSize}
         </if>
     </select>
 

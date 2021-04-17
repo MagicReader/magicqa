@@ -47,7 +47,8 @@
             c.real_name = #{real_name},
             c.school = #{school},
             c.major = #{major},
-            c.student_card_photo_src = #{student_card_photo_src}
+            c.student_card_photo_src = #{student_card_photo_src},
+            c.state = 2
         where u.uid = #{uid}
     </update>
 
