@@ -12,16 +12,16 @@
 
     <select id="select_by_pager" resultType="com.yanghui.magicqa.entity.dto.CommentInfo">
         select
-        c.comment_id as comment_id,
-        c.uid as uid,
-        case
-            when c.state=1 then u.name
-            when c.state=2 then concat(cer.school,'学生')
-            when c.state=3 then concat(cer.real_name,'-',cer.school,cer.major,'专业学生')
-        end name,
-        c.context as context,
-        c.time as time,
-        count(r.reply_id) as reply_number
+            c.comment_id as comment_id,
+            c.uid as uid,
+            case
+                when c.state=1 then u.name
+                when c.state=2 then concat(cer.school,'学生')
+                when c.state=3 then concat(cer.real_name,'-',cer.school,cer.major,'专业学生')
+            end name,
+            c.context as context,
+            c.time as time,
+            count(r.reply_id) as reply_number
         from comment as c
         left join user as u on c.uid = u.uid
         left join reply as r on c.comment_id = r.comment_id
@@ -51,6 +51,7 @@
         left join user as u on c.uid = u.uid
         left join certification  as cer on cer.certification_id = u.certification_id
         where c.uid = #{uid}
+        order by c.time DESC
         <if test="offset!=null and pageSize!=null">
             limit #{offset},#{pageSize}
         </if>

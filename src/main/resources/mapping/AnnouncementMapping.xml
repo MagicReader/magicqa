@@ -9,7 +9,9 @@
     </insert>
 
     <select id="select_by_pager" resultType="com.yanghui.magicqa.entity.Announcement">
-        select * from announcement limit #{offset},#{pageSize}
+        select * from announcement
+        order by time desc
+        limit #{offset},#{pageSize}
     </select>
 
     <select id="select_by_announcement_id" resultType="com.yanghui.magicqa.entity.dto.AnnouncementDetail">
@@ -21,7 +23,6 @@
         from announcement
         left join admin on announcement.admin_id = admin.admin_id
         where announcement_id = #{announcement_id}
-        order by time
     </select>
 
 </mapper>

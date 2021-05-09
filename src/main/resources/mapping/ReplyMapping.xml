@@ -37,7 +37,6 @@
         <if test="keyword!=null and keyword!=''">
             where r.context like concat('%',#{keyword},'%')
         </if >
-        order by r.time
         <if test="offset!=null and pageSize!=null">
             limit #{offset},#{pageSize}
         </if>
@@ -99,7 +98,6 @@
         left join user as to_u on r.to_uid = to_u.uid
         left join certification as to_cer on to_u.certification_id = to_cer.certification_id
         where r.from_uid = #{from_uid}
-        order by r.time
         <if test="offset!=null and pageSize!=null">
             limit #{offset},#{pageSize}
         </if>

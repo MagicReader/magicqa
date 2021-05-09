@@ -36,7 +36,7 @@
                 or p.context like concat('%',#{keyword},'%')
         </if >
         group by p.post_id
-        order by p.time
+        order by p.time DESC
         limit #{offset},#{pageSize}
     </select>
 
